@@ -1,0 +1,6 @@
+Token  Name : access_token
+Auth URL : https://accounts.google.com/o/oauth2/v2/auth?access_type=offline
+Access Token URL : https://www.googleapis.com/oauth2/v4/token
+ClientID/Client secret
+Scope: email
+Grant Type: Authorization Code
