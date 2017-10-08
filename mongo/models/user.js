@@ -3,43 +3,25 @@ import bcrypt from 'bcrypt-nodejs';
 
 const userSchema = mongoose.Schema({
 
-  local: {
-    id : String,
-    name: String,
-    email: String,
-    password: String,
-    picture: String,
+  id: String,
+  name: String,
+  token: String,
+  email: String,
+  password: String,
+  picture: String,
+  authType: Number,
+  stories: [{path: String, name: String, genre:String}],
 
-  },
-  facebook: {
-    id: String,
-    token: String,
-    email: String,
-    name: String,
-    picture: String,
-
-  },
-
-  google: {
-    id: String,
-    token: String,
-    email: String,
-    name: String,
-    picture: String,
-
-  },
-  stories: [{ path: String, name:String }]
-
-},{collection       : 'users'});
+}, {collection: 'users'});
 
 // methods ======================
 // generating a hash
-userSchema.methods.generateHash = function(password) {
+userSchema.methods.generateHash = function (password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
 
 // checking if password is valid
-userSchema.methods.validPassword = function(password) {
+userSchema.methods.validPassword = function (password) {
   return bcrypt.compareSync(password, this.password);
 };
 

@@ -17,6 +17,7 @@
     "nodemon": "^1.12.1"
   },
   "dependencies": {
+    "axios": "^0.16.2",
     "babel-core": "^6.26.0",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^3.5.0",
