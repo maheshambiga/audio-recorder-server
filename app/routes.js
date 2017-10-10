@@ -2,7 +2,7 @@ import express from 'express';
 
 import uuidv4 from 'uuid/v4'; //random
 import { generateToken, sendToken, verifyToken } from './../app/token';
-import { getCurrentUser, pushStories } from './../mongo/controllers/index';
+import { getCurrentUser, pushStories,getStories, getGenres } from './../mongo/controllers/index';
 import User from '../mongo/models/user';
 
 import * as auth from './../config/authConstants';
@@ -224,6 +224,10 @@ router.post('/login', (req, res, next) => {
 
 router.get('/auth/me', verifyToken, getCurrentUser);
 
-router.post('/upload', verifyToken, pushStories);
+router.post('/uploadStory', verifyToken, pushStories);
+
+router.get('/getStories', verifyToken, getStories);
+
+router.get('/getGenres', verifyToken, getGenres);
 
 export default router;

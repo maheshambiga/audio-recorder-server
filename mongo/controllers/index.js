@@ -1,5 +1,6 @@
 import User from '../../mongo/models/user';
 import multer from 'multer';
+import fs from 'fs';
 
 const uploadFile = () => {
   const storage = multer.diskStorage({
@@ -42,21 +43,18 @@ export const pushStories = (req, res) => {
     if (err) {
       res.status(500).send(err);
     } else {
-      const storage = multer.diskStorage({
-        destination: 'uploads/',
-        filename: function (req, file, cb) {
-          cb(null, Date.now() + '_' + file.originalname);
-        },
-      });
 
-      const  uploadFile = multer({storage: storage}).single('my_story');
-      uploadFile(req, res, function (err, file) {
+      const blob = req.body.blob;
+      const buf = new Buffer(blob, 'base64'); // decode
+      const fileName = `uploads/${Date.now()}_story.wav`;
+
+      fs.writeFile(fileName, buf, (err) => {
         if (err) {
           res.status(500).send(err);
-
         } else {
+
           user.stories.push({
-            'path': res.req.file.path,
+            'path': fileName,
             'name': req.body.name,
             'genre': req.body.genre,
           });
@@ -64,13 +62,37 @@ export const pushStories = (req, res) => {
             if (err) {
               res.status(500).send(err);
             } else {
-              res.json({'success': true, 'message': 'Success!'});
+              res.json({'success': true, 'message': 'You story is uploaded successfully!'});
             }
           });
-        }
 
+        }
       });
+
 
     }
   });
+};
+
+export const getStories = (req, res) => {
+  const id = req.auth.id;
+
+
+
+  User.find({}, {_id:0, stories:1}, function (err, docs) {
+    if (err) res.status(500).send(err);
+    res.json(docs);
+  });
+
+
+
+};
+
+export const getGenres = (req, res) => {
+  const id = req.auth.id;
+
+
+
+
+
 };

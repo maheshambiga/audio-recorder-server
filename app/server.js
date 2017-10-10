@@ -35,7 +35,7 @@ app.use(morgan('dev')); // log every request to the console
 app.use(bodyParser.urlencoded({
   extended: true,
 })); // get information from html forms
-app.use(bodyParser.json()); // get information from other json inputs
+app.use(bodyParser.json({limit: '50mb', type: 'application/json'})); // get information from other json inputs
 
 
 
