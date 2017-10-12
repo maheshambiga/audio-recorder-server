@@ -2,7 +2,7 @@ import express from 'express';
 
 import uuidv4 from 'uuid/v4'; //random
 import { generateToken, sendToken, verifyToken } from './../app/token';
-import { getCurrentUser, pushStories,getStories, getGenres } from './../mongo/controllers/index';
+import { getCurrentUser, pushStories,getStories, getGenres, getStory, getStoryAudio } from './../mongo/controllers/index';
 import User from '../mongo/models/user';
 
 import * as auth from './../config/authConstants';
@@ -228,6 +228,10 @@ router.post('/uploadStory', verifyToken, pushStories);
 
 router.get('/getStories', verifyToken, getStories);
 
-router.get('/getGenres', verifyToken, getGenres);
+router.get('/getGenre', verifyToken, getGenres);
+
+router.get('/story', verifyToken, getStory);
+
+router.get('/getAduio/:fileName',  getStoryAudio);
 
 export default router;

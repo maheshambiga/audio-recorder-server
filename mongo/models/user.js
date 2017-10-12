@@ -10,7 +10,7 @@ const userSchema = mongoose.Schema({
   password: String,
   picture: String,
   authType: Number,
-  stories: [{path: String, name: String, genre:String}],
+  stories: [{path: String, storyName: String, genre:String}],
 
 }, {collection: 'users'});
 
