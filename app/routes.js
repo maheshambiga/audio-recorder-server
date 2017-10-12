@@ -2,7 +2,7 @@ import express from 'express';
 
 import uuidv4 from 'uuid/v4'; //random
 import { generateToken, sendToken, verifyToken } from './../app/token';
-import { getCurrentUser, pushStories,getStories, getGenres, getStory, getStoryAudio } from './../mongo/controllers/index';
+import { getCurrentUser, pushStories, getGenres, getMyStories, getOneStory, getStoryAudio } from './../mongo/controllers/index';
 import User from '../mongo/models/user';
 
 import * as auth from './../config/authConstants';
@@ -181,7 +181,7 @@ router.post('/login', (req, res, next) => {
           res.json({'success': false, 'message': 'Oops! Invalid username or password.'});
         }else{
           req.auth = {
-            id: user.id,
+            id: user._id,
           };
           next();
         }
@@ -192,7 +192,7 @@ router.post('/login', (req, res, next) => {
           getGoogleProfile(token).then((res)=>{
             if(res.data.email === email){
               req.auth = {
-                id: user.id,
+                id: user._id,
               };
               next();
             }else{
@@ -205,7 +205,7 @@ router.post('/login', (req, res, next) => {
           getFacebookProfile(token).then((res)=>{
             if(res.data.email === email){
               req.auth = {
-                id: user.id,
+                id: user._id,
               };
               next();
             }else{
@@ -226,12 +226,12 @@ router.get('/auth/me', verifyToken, getCurrentUser);
 
 router.post('/uploadStory', verifyToken, pushStories);
 
-router.get('/getStories', verifyToken, getStories);
-
 router.get('/getGenre', verifyToken, getGenres);
 
-router.get('/story', verifyToken, getStory);
+router.get('/myStories', verifyToken, getMyStories);
 
-router.get('/getAduio/:fileName',  getStoryAudio);
+router.get('/story', verifyToken, getOneStory);
+
+router.get('/audio/:fileName',  getStoryAudio);
 
 export default router;
