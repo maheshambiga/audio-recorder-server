@@ -1,12 +1,10 @@
 import express from 'express';
-
 import uuidv4 from 'uuid/v4'; //random
 import { generateToken, sendToken, verifyToken } from './../app/token';
-import { getCurrentUser, pushStories, getGenres, getMyStories, getOneStory, getStoryAudio } from './../mongo/controllers/index';
-import User from '../mongo/models/user';
-
+import { getCurrentUser, pushStories, getGenres, getMyStories, getOneStory, getStoryAudio, uploadToFireBase } from './../mongo/controllers/index';
 import * as auth from './../config/authConstants';
 import {getGoogleProfile,getFacebookProfile} from './fetchSocialProfile';
+import User from '../mongo/models/user';
 const router = express.Router();
 
 router.use(function (err, req, res, next) {
@@ -233,5 +231,6 @@ router.get('/myStories', verifyToken, getMyStories);
 router.get('/story', verifyToken, getOneStory);
 
 router.get('/audio/:fileName',  getStoryAudio);
+
 
 export default router;

@@ -4,7 +4,7 @@ const google = {
     'clientSecret': '_dFFRdII4csybiRTN5zAp6g7'
   },
   'facebookAuth' : {
-    'clientID'      : '507097652976160', // your App ID
+    'clientID'      : '507097652976160', //App ID
     'clientSecret'  : 'c579b1238ac4cfc86f2f3e26f79a509c'
   }
 };

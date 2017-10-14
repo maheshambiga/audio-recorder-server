@@ -1,8 +1,7 @@
 import User from '../../mongo/models/user';
 import multer from 'multer';
-import fs from 'fs';
-import mediaserver from 'mediaserver';
-
+import https from 'https';
+import {uploadFileToGoogleCloud, readFileFromGoogleCloud} from './../../GoogleCloudStorage';
 const ObjectId = require('mongoose').Types.ObjectId;
 
 const uploadFile = () => {
@@ -36,37 +35,32 @@ export const getCurrentUser = (req, res) => {
 export const pushStories = (req, res) => {
   const id = req.auth.id;
 
-  User.findOne({id}, (err, user) => {
+  User.findOne({'_id':new ObjectId(id)}, (err, user) => {
     if (err) {
       res.status(500).send(err);
     } else {
 
       const blob = req.body.blob;
-      const buf = new Buffer(blob, 'base64'); // decode
-      const fileName = `uploads/${Date.now()}_story.wav`;
 
-      fs.writeFile(fileName, buf, (err) => {
-        if (err) {
-          res.status(500).send(err);
-        } else {
+      uploadFileToGoogleCloud(blob).then((data)=>{
+        user.stories.push({
+          'path': data.fileName,
+          'storyName': req.body.storyName,
+          'genre': req.body.genre,
+        });
+        user.save((err, user) => {
+          if (err) {
+            res.status(500).send(err);
+          } else {
+            res.json({
+              'success': true,
+              'message': 'You story is uploaded successfully!'
+            });
+          }
+        });
 
-          user.stories.push({
-            'path': fileName,
-            'storyName': req.body.storyName,
-            'genre': req.body.genre,
-          });
-          user.save((err, user) => {
-            if (err) {
-              res.status(500).send(err);
-            } else {
-              res.json({
-                'success': true,
-                'message': 'You story is uploaded successfully!',
-              });
-            }
-          });
-
-        }
+      }).catch((err)=>{
+        res.status(500).send(err);
       });
 
     }
@@ -187,6 +181,19 @@ export const getOneStory = (req, res) => {
 
 export const getStoryAudio = (req, res) => {
   const fileName = req.params.fileName;
-  console.log(process.cwd());
-  mediaserver.pipe(req, res, `${process.cwd()}/uploads/${fileName}`);
+
+  readFileFromGoogleCloud(fileName).then((results)=>{
+    const url = results[0];
+
+    const externalReq = https.request({
+      hostname: "storage.googleapis.com",
+      path: url
+    }, function(externalRes) {
+
+      externalRes.pipe(res);
+    });
+    externalReq.end();
+
+  });
+
 };
