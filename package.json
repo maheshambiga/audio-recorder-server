@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
+    "start": "webpack --config webpack/webpack.config.js --color -p --progress",
+    "dev-server": "node_modules/nodemon/bin/nodemon.js -- node_modules/babel-cli/bin/babel-node.js index.js"
   },
   "author": "Mahesh Ambig",
   "license": "ISC",
