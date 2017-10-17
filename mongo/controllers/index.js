@@ -1,54 +1,55 @@
-import User from '../../mongo/models/user';
-import multer from 'multer';
-import https from 'https';
-import {uploadFileToGoogleCloud, readFileFromGoogleCloud} from './../../GoogleCloudStorage';
+var User = require('../../mongo/models/user');
+var multer = require('multer');
+var https = require('https');
+var GoogleCloudStorage = require('./../../GoogleCloudStorage');
+
 const ObjectId = require('mongoose').Types.ObjectId;
 
-const uploadFile = () => {
+const uploadFile = function()  {
   const storage = multer.diskStorage({
     destination: 'uploads/',
     filename: function (req, file, cb) {
       cb(null, Date.now() + '_' + file.originalname);
-    },
+    }
   });
 
   return multer({storage: storage}).single('my_story');
 
 };
 
-export const getCurrentUser = (req, res) => {
+exports.getCurrentUser = function(req, res) {
   const id = req.auth.id;
 
-  process.nextTick(() => {
-    User.findOne({'_id': new ObjectId(id)}, (err, user) => {
+  process.nextTick(function(){
+    User.findOne({'_id': new ObjectId(id)},function(err, user) {
       if (err) {
         res.status(500).send(err);
       } else {
-        const {email, name, picture} = user;
 
-        res.json({'success': true, data: {email, name, picture}});
+
+        res.json({'success': true, data: {email:user.email, name:user.name, picture:user.picture}});
       }
     });
   });
 };
 
-export const pushStories = (req, res) => {
+exports.pushStories = function(req, res) {
   const id = req.auth.id;
 
-  User.findOne({'_id':new ObjectId(id)}, (err, user) => {
+  User.findOne({'_id':new ObjectId(id)}, function(err, user){
     if (err) {
       res.status(500).send(err);
     } else {
 
       const blob = req.body.blob;
 
-      uploadFileToGoogleCloud(blob).then((data)=>{
+  GoogleCloudStorage.uploadFileToGoogleCloud(blob).then(function(data){
         user.stories.push({
           'path': data.fileName,
           'storyName': req.body.storyName,
-          'genre': req.body.genre,
+          'genre': req.body.genre
         });
-        user.save((err, user) => {
+        user.save(function(err, user) {
           if (err) {
             res.status(500).send(err);
           } else {
@@ -59,7 +60,7 @@ export const pushStories = (req, res) => {
           }
         });
 
-      }).catch((err)=>{
+      }).catch(function(err){
         res.status(500).send(err);
       });
 
@@ -67,7 +68,7 @@ export const pushStories = (req, res) => {
   });
 };
 
-export const getGenres = (req, res) => {
+exports.getGenres = function(req, res) {
   const id = req.auth.id;
   const genre = req.query.genre;
 
@@ -75,11 +76,11 @@ export const getGenres = (req, res) => {
     User.aggregate(
       {$unwind: '$stories'},
       {$match: {'_id': {'$ne': new ObjectId(id)}}},
-      {$project: {createdBy: '$name', story: '$stories'}}, (err, data) => {
+      {$project: {createdBy: '$name', story: '$stories'}}, function(err, data) {
         if (err) {
           res.status(500).send(err);
         } else {
-          res.json({'success': true, data});
+          res.json({'success': true, data:data});
         }
       });
   } else {
@@ -93,22 +94,22 @@ export const getGenres = (req, res) => {
             $filter: {
               input: ['$stories'],
               as: 'story',
-              cond: {$eq: ['$$story.genre', genre]},
-            },
-          },
-        },
-      }, {$unwind: '$story'}, (err, data) => {
+              cond: {$eq: ['$$story.genre', genre]}
+            }
+          }
+        }
+      }, {$unwind: '$story'}, function(err, data) {
         if (err) {
           res.status(500).send(err);
         } else {
-          res.json({'success': true, data});
+          res.json({'success': true, data:data});
         }
       });
   }
 
 };
 
-export const getMyStories = (req, res) => {
+exports.getMyStories = function(req, res) {
   const id = req.auth.id;
   const genre = req.query.genre;
 
@@ -116,11 +117,11 @@ export const getMyStories = (req, res) => {
     User.aggregate(
       {$unwind: '$stories'},
       {$match: {'_id': new ObjectId(id)}},
-      {$project: {createdBy: '$name', story: '$stories'}}, (err, data) => {
+      {$project: {createdBy: '$name', story: '$stories'}}, function(err, data) {
         if (err) {
           res.status(500).send(err);
         } else {
-          res.json({'success': true, data});
+          res.json({'success': true, data:data});
         }
       });
   } else {
@@ -134,22 +135,22 @@ export const getMyStories = (req, res) => {
             $filter: {
               input: ['$stories'],
               as: 'story',
-              cond: {$eq: ['$$story.genre', genre]},
-            },
-          },
-        },
-      }, {$unwind: '$story'}, (err, data) => {
+              cond: {$eq: ['$$story.genre', genre]}
+            }
+          }
+        }
+      }, {$unwind: '$story'}, function(err, data) {
         if (err) {
           res.status(500).send(err);
         } else {
-          res.json({'success': true, data});
+          res.json({'success': true, data:data});
         }
       });
   }
 
 };
 
-export const getOneStory = (req, res) => {
+exports.getOneStory = function(req, res) {
   const id = req.auth.id;
   const storyId = req.query.storyId;
   const userId = req.query.userId;
@@ -164,25 +165,25 @@ export const getOneStory = (req, res) => {
           $filter: {
             input: ['$stories'],
             as: 'story',
-            cond: {$eq: ['$$story._id', new ObjectId(storyId)]},
-          },
-        },
-      },
+            cond: {$eq: ['$$story._id', new ObjectId(storyId)]}
+          }
+        }
+      }
     },
-    {$unwind: '$story'}, (err, data) => {
+    {$unwind: '$story'}, function(err, data) {
       if (err) {
         res.status(500).send(err);
       } else {
-        res.json({'success': true, data});
+        res.json({'success': true, data:data});
       }
     });
 
 };
 
-export const getStoryAudio = (req, res) => {
+exports.getStoryAudio = function (req, res) {
   const fileName = req.params.fileName;
 
-  readFileFromGoogleCloud(fileName).then((results)=>{
+  GoogleCloudStorage.readFileFromGoogleCloud(fileName).then(function(results){
     const url = results[0];
 
     const externalReq = https.request({

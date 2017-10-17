@@ -1,11 +1,12 @@
-import express from 'express';
-import uuidv4 from 'uuid/v4'; //random
-import { generateToken, sendToken, verifyToken } from './../app/token';
-import { getCurrentUser, pushStories, getGenres, getMyStories, getOneStory, getStoryAudio, uploadToFireBase } from './../mongo/controllers/index';
-import * as auth from './../config/authConstants';
-import {getGoogleProfile,getFacebookProfile} from './fetchSocialProfile';
-import User from '../mongo/models/user';
-const router = express.Router();
+var express = require('express');
+var uuidv4  = require('uuid/v4'); //random
+var token = require('./../app/token');
+var routeController = require('./../mongo/controllers/index');
+var auth= require('./../config/authConstants');
+var fetchSocialProfile = require('./fetchSocialProfile');
+
+var User = require('../mongo/models/user');
+var router = express.Router();
 
 router.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
@@ -18,41 +19,41 @@ router.get('/health-check', function (req, res) {
   res.send('Hello World');
 });
 
-const socialSingUp = ({type, id, name, email, imageUrl}) => {
-  return new Promise((resolve, reject) => {
-    User.findOne({id, authType:type}, (err, user) => {
+const socialSingUp = function(data) {
+  return new Promise(function(resolve, reject) {
+    User.findOne({id:id ,authType:type}, function(err, user){
       if (err) {
         reject({
           statusCOde: 500,
-          res: err,
+          res: err
         });
       }
 
       if (!user) {
         // if the user is not in the database, create a new user
-        let newUser = new User();
+        var newUser = new User();
 
         // set all of the relevant information
-        newUser.id = id;
-        newUser.name = name;
-        newUser.email = email; // pull the first email
-        newUser.picture = imageUrl;
-        newUser.authType = type;
+        newUser.id = data.id;
+        newUser.name = data.name;
+        newUser.email = data.email; // pull the first email
+        newUser.picture = data.imageUrl;
+        newUser.authType = data.type;
         // save the user and send token back
         newUser.save(function (err, currUser) {
 
           if (err) {
             reject({
               statusCOde: 500,
-              res: err,
+              res: err
             });
           } else {
             resolve({
               statusCOde: 200,
               res: {
                 'success': true,
-                'message': 'User successfully registered.',
-              },
+                'message': 'User successfully registered.'
+              }
             });
 
           }
@@ -61,7 +62,7 @@ const socialSingUp = ({type, id, name, email, imageUrl}) => {
       } else {
         resolve({
           statusCOde: 200,
-          res: {'success': true, 'message': 'User is already registered.'},
+          res: {'success': true, 'message': 'User is already registered.'}
         });
 
       }
@@ -70,41 +71,41 @@ const socialSingUp = ({type, id, name, email, imageUrl}) => {
 
 };
 
-const localSingUp = ({type, email, password, name, imageUrl}) => {
-  return new Promise((resolve, reject) => {
-    User.findOne({email, authType:type}, function (err, user) {
+const localSingUp = function(data){
+  return new Promise(function(resolve, reject) {
+    User.findOne({email:email, authType:type}, function (err, user) {
       if (err) {
         reject({
           statusCOde: 500,
-          res: err,
+          res: err
         });
       }
 
       if (user) {
         resolve({
           statusCOde: 200,
-          res: {'success': false, 'message': 'That email is already taken.'},
+          res: {'success': false, 'message': 'That email is already taken.'}
         });
 
       } else {
 
         // if there is no user with that email
         // create the user
-        let newUser = new User();
+        var newUser = new User();
 
         // set the user's local credentials
-        newUser.name = name;
+        newUser.name = data.name;
         newUser.id = uuidv4();
-        newUser.email = email;
-        newUser.password = newUser.generateHash(password);
-        newUser.picture = imageUrl;
-        newUser.authType = type;
+        newUser.email = data.email;
+        newUser.password = newUser.generateHash(data.password);
+        newUser.picture = data.imageUrl;
+        newUser.authType = data.type;
         // save the user
         newUser.save(function (err) {
           if (err) {
             resolve({
               statusCOde: 401,
-              res: err,
+              res: err
             });
 
           } else {
@@ -112,8 +113,8 @@ const localSingUp = ({type, email, password, name, imageUrl}) => {
               statusCOde: 200,
               res: {
                 'success': true,
-                'message': 'User successfully registered.',
-              },
+                'message': 'User successfully registered.'
+              }
             });
 
           }
@@ -123,7 +124,7 @@ const localSingUp = ({type, email, password, name, imageUrl}) => {
   });
 };
 
-router.post('/signup', (req, res, next) => {
+router.post('/signup', function(req, res, next){
 
   const type = req.body.type;
 
@@ -134,9 +135,9 @@ router.post('/signup', (req, res, next) => {
     const name = req.body.name;
     const imageUrl = req.body.imageUrl;
 
-    localSingUp({type, email, password, name, imageUrl}).then((data) => {
+    localSingUp({email:email, password:password, name:name, imageUrl:imageUrl}).then(function(data){
       res.status(data.statusCOde).json(data.res);
-    }).catch((data) => {
+    }).catch(function(data) {
       res.status(data.statusCOde).json(data.res);
     });
 
@@ -146,22 +147,22 @@ router.post('/signup', (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const email = req.body.email;
 
-    socialSingUp({type, id, name, email, imageUrl}).then((data) => {
+    socialSingUp({id:id, name:name, imageUrl:imageUrl, email:email}).then(function(data) {
       res.status(data.statusCOde).json(data.res);
-    }).catch((data) => {
+    }).catch(function(data) {
       res.status(data.statusCOde).json(data.res);
     });
   }
 
 });
 
-router.post('/login', (req, res, next) => {
+router.post('/login', function(req, res, next) {
   const email = req.body.email;
   const password = req.body.password;
   const type = req.body.type;
 
   //async
-  process.nextTick(() => {
+  process.nextTick(function() {
     User.findOne({'email': email, authType:type}, function (err, user) {
       // if there are any errors, return the error before anything else
       if (err)
@@ -179,7 +180,7 @@ router.post('/login', (req, res, next) => {
           res.json({'success': false, 'message': 'Oops! Invalid username or password.'});
         }else{
           req.auth = {
-            id: user._id,
+            id: user._id
           };
           next();
         }
@@ -187,29 +188,29 @@ router.post('/login', (req, res, next) => {
 
         const token = password;
         if(type === auth.GOOGLE){
-          getGoogleProfile(token).then((res)=>{
+          fetchSocialProfile.getGoogleProfile(token).then(function(res){
             if(res.data.email === email){
               req.auth = {
-                id: user._id,
+                id: user._id
               };
               next();
             }else{
               res.json({'success': false, 'message': 'Oops! Invalid username or password.'});
             }
-          }).catch((err)=>{
+          }).catch(function(err){
             res.json({'success': false, 'message': 'Oops! Invalid username or password.'});
           });
         }else  if(type === auth.FACEBOOK){
-          getFacebookProfile(token).then((res)=>{
+          fetchSocialProfile.getFacebookProfile(token).then(function(res){
             if(res.data.email === email){
               req.auth = {
-                id: user._id,
+                id: user._id
               };
               next();
             }else{
               res.json({'success': false, 'message': 'Oops! Invalid username or password.'});
             }
-          }).catch((err)=>{
+          }).catch(function(err){
             res.json({'success': false, 'message': 'Oops! Invalid username or password.'});
           });
         }
@@ -218,19 +219,19 @@ router.post('/login', (req, res, next) => {
     });
   });
 
-}, generateToken, sendToken);
+}, token.generateToken, token.sendToken);
 
-router.get('/auth/me', verifyToken, getCurrentUser);
+router.get('/auth/me', token.verifyToken, routeController.getCurrentUser);
 
-router.post('/uploadStory', verifyToken, pushStories);
+router.post('/uploadStory', token.verifyToken, routeController.pushStories);
 
-router.get('/getGenre', verifyToken, getGenres);
+router.get('/getGenre', token.verifyToken, routeController.getGenres);
 
-router.get('/myStories', verifyToken, getMyStories);
+router.get('/myStories', token.verifyToken, routeController.getMyStories);
 
-router.get('/story', verifyToken, getOneStory);
+router.get('/story', token.verifyToken, routeController.getOneStory);
 
-router.get('/audio/:fileName',  getStoryAudio);
+router.get('/audio/:fileName',  routeController.getStoryAudio);
 
 
-export default router;
+module.exports = router;
