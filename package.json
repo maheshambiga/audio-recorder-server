@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node_modules/nodemon/bin/nodemon.js app/server.js"
+    "start": "nodemon app/server.js"
   },
   "author": "Mahesh Ambig",
   "license": "ISC",
