@@ -1,3 +1,3 @@
-export const LOCAL = 0;
-export const GOOGLE = 1;
-export const FACEBOOK = 2;
+exports.LOCAL = 0;
+exports.GOOGLE = 1;
+exports.FACEBOOK = 2;
