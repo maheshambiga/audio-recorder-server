@@ -1,7 +1,7 @@
 const google = {
   'googleAuth': {
-    'clientID': '898381849176-mg48en21ocj55d0l0vqqaj87lujlqid6.apps.googleusercontent.com',
-    'clientSecret': '_dFFRdII4csybiRTN5zAp6g7'
+    'clientID': '6508075040-nv97qej2oqcr2fagj5b55ci5vluesj9t.apps.googleusercontent.com',
+    'clientSecret': 'mFkcCfzCUQHGSu0bw9tMnL7a'
   },
   'facebookAuth' : {
     'clientID'      : '507097652976160', //App ID

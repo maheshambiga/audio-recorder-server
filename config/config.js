@@ -1,7 +1,7 @@
 import bluebird from 'bluebird';
 
 const dbConnection = {
-  'url' : 'mongodb://localhost:27017/react-native',
+  'url' : 'mongodb://mahesh.ambig:storytelling123@ds119355.mlab.com:19355/story-telling',
   'tokenSecret': 'ulalaulala',
   'options':{
     'promiseLibrary': bluebird
