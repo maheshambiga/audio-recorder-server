@@ -21,7 +21,7 @@ router.get('/health-check', function (req, res) {
 
 const socialSingUp = function(data) {
   return new Promise(function(resolve, reject) {
-    User.findOne({id:id ,authType:type}, function(err, user){
+    User.findOne({id:data.id ,authType:data.type}, function(err, user){
       if (err) {
         reject({
           statusCOde: 500,
@@ -73,7 +73,7 @@ const socialSingUp = function(data) {
 
 const localSingUp = function(data){
   return new Promise(function(resolve, reject) {
-    User.findOne({email:email, authType:type}, function (err, user) {
+    User.findOne({email:data.email, authType:data.type}, function (err, user) {
       if (err) {
         reject({
           statusCOde: 500,
@@ -135,7 +135,7 @@ router.post('/signup', function(req, res, next){
     const name = req.body.name;
     const imageUrl = req.body.imageUrl;
 
-    localSingUp({email:email, password:password, name:name, imageUrl:imageUrl}).then(function(data){
+    localSingUp({type:type, email:email, password:password, name:name, imageUrl:imageUrl}).then(function(data){
       res.status(data.statusCOde).json(data.res);
     }).catch(function(data) {
       res.status(data.statusCOde).json(data.res);
@@ -147,7 +147,7 @@ router.post('/signup', function(req, res, next){
     const imageUrl = req.body.imageUrl;
     const email = req.body.email;
 
-    socialSingUp({id:id, name:name, imageUrl:imageUrl, email:email}).then(function(data) {
+    socialSingUp({id:id, type:type, name:name, imageUrl:imageUrl, email:email}).then(function(data) {
       res.status(data.statusCOde).json(data.res);
     }).catch(function(data) {
       res.status(data.statusCOde).json(data.res);
