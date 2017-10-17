@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "story-telling-app-bfe0b",
+  "private_key_id": "561c725eca538008be1b1cd9a33e5608f1c4c365",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDO3WCVXRQSib1s\noGEpS6Mrtk2r/ocSYENmAQakFw17v9cNCb/JmQKlHzFhqbDf+Xk2EtSWnkj3WrxV\nvM01EkyOpmLuM+9sR6DVORCCawjs9ugClGWF9AGpEcX4ohHsXVTae00tsKdDlv6T\nD9wY6+fnHCa7Dzb2O6rgXR/BWUMhvD9lVM7eCQeze7pMmWFZhR1GF/BpoYChJx+V\nLr9k4NdV47BIR1X8YbPKwOGSJ3/5fSSfG9Bb3qAC8Fxyl4sDtqfQ8PupG2aFcRP0\n35qulbeoMt0LiSmmNkeuG/XdkiSUVljBIZ8ILwvdAy9simaY4moN0hCeIC6cT/Gs\np7pvUjVnAgMBAAECggEAH6YUS3ByIblGbILHsAm3wnhMadlce53pXIcg/PnfQOTu\nLJB78dv3C6GPbIxfAzqn0Mi7aE/PL14yckDwea4oXarBzVp6HEGD2cYL6z109XbR\nCD6r9FKLQ9Ke90B/KCp0pk3hq5vbUKaeoYv2Sy8hy7oC3Zug97XT7tT7MW72q7Ja\ni0zggooLAox7j+7RfmrBLish2BIdUehmHYYE15EUHzM2Xe7e5aEmttHBzekeMfK7\nTXW5mk4IelEYJ0dVA2msP+ROu3dqnEX8O+0ziJDPXbzGREtNT6r/dT4smtIvS40I\nBndjBCLrDPOIqYP7kp5Ca3N/BWlw3yyBGVJoHuGYAQKBgQD/Klzsmv7oBkFQd/QZ\njcEUvVG4e3vnUes5geVCzoPsbmZcF3XsIhyScLV5UJXCoo3bgI8O7NfQy4WTwAi3\nGvuMfJdBN7NfPDp9rsen1EJYe7h5jS1iXGuqMtChe5vIdK6P/sbSW9oguf5FCPHQ\ncwpULQd8DqXN760Io21z7rxNzwKBgQDPipMWs8qYRjp2LW+XzGf+F/u7qUej0/12\nzyobbGhUbdami1+n9657s5B/ad6Au9AsPxF6N0Yxlyw4AdJ2fo053BkVI1wppJF3\nuQ16MeiMSH3Tq6nDVOGmdnPcdZoM7i7o8TZWDAtFa8UuRvMlXdTTLdlKqjlDlhlf\nFUHdNbdc6QKBgQDcQLr5WUkTCuMyDHjd3eh+eHSj46MuJx3+A8vbgNuLKDie4Xle\nnItBNJzQ3OiImzwL7sqNvY8Eocjpomdjdp0PxTPijav9VsW+WzHoAmZKbnDsKxqz\nvscIoNhJq6Lqwx0zGl6QkcyVVzbObEwe/E48HqpJQXOJcYtQ25DM85QDLQKBgQDB\ndwgOTaM5t52ftFMmSiFWt7yt/usNSPwp2IwD7FaE/a7uqVWOGlDId2bnnyUPFATG\nejQsnYINkEJkIy6xzt6PZSDsl32+Q+5mkFaD5ipFOv4wZwFlWKbQqfLvO6FTFGUe\nOFzScX/AQuoYbYMS/hj6ku7Pr0aaPj2AaSxwrTY0oQKBgGVF1gWSJ0/+P9h9vGGu\nRmm7kKFS9XGUFnU4BN+Fn4oFzqRTljgJs+P9sXMR5rQarIsX5yBDzghxuDReT2W0\nJVUfD752hs1UAk+AlbMjTkXSu7GOSdqklhpsrtev1ydTDrl/HoNGws+aHPaKCO4L\n2ilFb0iTYWxpylpsbycDqa5W\n-----END PRIVATE KEY-----\n",
+  "client_email": "mahesh-ambig@story-telling-app-bfe0b.iam.gserviceaccount.com",
+  "client_id": "115006267171184110241",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://accounts.google.com/o/oauth2/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mahesh-ambig%40story-telling-app-bfe0b.iam.gserviceaccount.com"
+}
