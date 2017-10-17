@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "webpack --config webpack/webpack.config.js --color -p --progress",
+    "dev-server": "node_modules/nodemon/bin/nodemon.js -- node_modules/babel-cli/bin/babel-node.js index.js"
   },
   "author": "Mahesh Ambig",
   "license": "ISC",
@@ -14,12 +15,14 @@
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "nodemon": "^1.12.1"
+    "nodemon": "^1.12.1",
+    "webpack": "^3.7.1"
   },
   "dependencies": {
     "@google-cloud/storage": "^1.4.0",
     "axios": "^0.16.2",
     "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
     "bcrypt-nodejs": "0.0.3",
     "bluebird": "^3.5.0",
     "body-parser": "^1.18.2",
