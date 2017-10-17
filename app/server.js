@@ -1,6 +1,5 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import passport from 'passport';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import cors from 'cors';
