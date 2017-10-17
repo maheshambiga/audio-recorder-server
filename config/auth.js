@@ -1,4 +1,4 @@
-const google = {
+const socialConfig = {
   'googleAuth': {
     'clientID': '6508075040-nv97qej2oqcr2fagj5b55ci5vluesj9t.apps.googleusercontent.com',
     'clientSecret': 'mFkcCfzCUQHGSu0bw9tMnL7a'
@@ -9,4 +9,4 @@ const google = {
   }
 };
 
-export default google;
+module.exports = socialConfig;
