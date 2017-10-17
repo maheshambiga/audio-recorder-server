@@ -15,12 +15,14 @@ const config = {
         query: {
           presets: ['es2015'],
         },
+      },
+      {
+        // several gcloud dependencies have !#, so we'll apply loader broadly
+        test: /node_modules\/.*\.js$/,
+        loaders: ['babel-loader']
       }
     ]
-  },
-  plugins: [
-
-  ]
+  }
 };
 
 module.exports= config;
