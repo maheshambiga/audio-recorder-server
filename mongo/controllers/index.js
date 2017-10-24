@@ -76,7 +76,7 @@ exports.getGenres = function(req, res) {
     User.aggregate(
       {$unwind: '$stories'},
       {$match: {'_id': {'$ne': new ObjectId(id)}}},
-      {$project: {createdBy: '$name', story: '$stories'}}, function(err, data) {
+      {$project: {createdBy: '$name', picture:'$picture', story: '$stories'}}, function(err, data) {
         if (err) {
           res.status(500).send(err);
         } else {
@@ -90,6 +90,7 @@ exports.getGenres = function(req, res) {
       {
         $project: {
           createdBy: '$name',
+          picture:'$picture',
           story: {
             $filter: {
               input: ['$stories'],
@@ -117,7 +118,7 @@ exports.getMyStories = function(req, res) {
     User.aggregate(
       {$unwind: '$stories'},
       {$match: {'_id': new ObjectId(id)}},
-      {$project: {createdBy: '$name', story: '$stories'}}, function(err, data) {
+      {$project: {createdBy: '$name', picture:'$picture', story: '$stories'}}, function(err, data) {
         if (err) {
           res.status(500).send(err);
         } else {
@@ -131,6 +132,7 @@ exports.getMyStories = function(req, res) {
       {
         $project: {
           createdBy: '$name',
+          picture:'$picture',
           story: {
             $filter: {
               input: ['$stories'],
@@ -161,6 +163,7 @@ exports.getOneStory = function(req, res) {
     {
       $project: {
         createdBy: '$name',
+        picture:'$picture',
         story: {
           $filter: {
             input: ['$stories'],
