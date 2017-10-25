@@ -10,22 +10,23 @@ const bucketName = 'story_audios_bucket';
 
 const bucket = storage.bucket(bucketName);
 
-bucket.exists().then(function(data) {
+bucket.exists().then(function (data) {
   const exists = data[0];
 
-  if(!exists)storage.createBucket(bucketName, function(err, bucket, apiResponse)  {
-    if (err) {
-      return console.log('ERROR:', err);
-    }
-    console.log('Bucket created.');
-  });
+  if (!exists) storage.createBucket(bucketName,
+    function (err, bucket, apiResponse) {
+      if (err) {
+        return console.log('ERROR:', err);
+      }
+      console.log('Bucket created.');
+    });
 });
 
-exports.uploadFileToGoogleCloud = function(blob)  {
+exports.uploadFileToGoogleCloud = function (blob) {
 
   const buf = new Buffer(blob, 'base64'); // decode
 
-  const fileName = Date.now()+'_story.wav';
+  const fileName = Date.now() + '_story.wav';
 
   const bucket = storage.bucket(bucketName);
 
@@ -37,7 +38,7 @@ exports.uploadFileToGoogleCloud = function(blob)  {
     }
   });
 
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     blobStream.on('error', function (err) {
       reject(err);
     }).on('finish', function (data) {
@@ -49,14 +50,16 @@ exports.uploadFileToGoogleCloud = function(blob)  {
   });
 };
 
-exports.readFileFromGoogleCloud = function(fileName) {
+exports.readFileFromGoogleCloud = function (fileName) {
   //TODO-check for a better approach to read files from GCS
   const options = {
     action: 'read',
     expires: '11-20-2020'
   };
 
-  return storage.bucket(bucketName)
-  .file(fileName)
-  .getSignedUrl(options);
+  return storage.bucket(bucketName).file(fileName).getSignedUrl(options);
+};
+
+exports.deleteFileFromGoogleCloud = function (fileName) {
+  return storage.bucket(bucketName).file(fileName).delete();
 };

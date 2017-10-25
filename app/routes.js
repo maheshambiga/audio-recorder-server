@@ -231,6 +231,8 @@ router.get('/myStories', token.verifyToken, routeController.getMyStories);
 
 router.get('/story', token.verifyToken, routeController.getOneStory);
 
+router.post('/removeStory', token.verifyToken, routeController.deleteStory);
+
 router.get('/audio/:fileName',  routeController.getStoryAudio);
 
 
