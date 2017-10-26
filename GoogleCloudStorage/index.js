@@ -22,9 +22,9 @@ bucket.exists().then(function (data) {
     });
 });
 
-exports.uploadFileToGoogleCloud = function (blob) {
+exports.uploadFileToGoogleCloud = function (filename) {
 
-  const buf = new Buffer(blob, 'base64'); // decode
+  /*const buf = new Buffer(blob, 'base64'); // decode
 
   const fileName = Date.now() + '_story.wav';
 
@@ -47,7 +47,10 @@ exports.uploadFileToGoogleCloud = function (blob) {
     });
 
     blobStream.end(buf);
-  });
+  });*/
+  return storage
+  .bucket(bucketName)
+  .upload(filename);
 };
 
 exports.readFileFromGoogleCloud = function (fileName) {
@@ -58,8 +61,13 @@ exports.readFileFromGoogleCloud = function (fileName) {
   };
 
   return storage.bucket(bucketName).file(fileName).getSignedUrl(options);
+  //return storage.bucket(bucketName).file(fileName).get();
 };
 
 exports.deleteFileFromGoogleCloud = function (fileName) {
   return storage.bucket(bucketName).file(fileName).delete();
+};
+
+exports.makePublic = function (fileName) {
+  return storage.bucket(bucketName).file(fileName).makePublic();
 };

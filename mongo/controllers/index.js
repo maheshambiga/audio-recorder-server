@@ -1,6 +1,7 @@
 var User = require('../../mongo/models/user');
 var multer = require('multer');
 var https = require('https');
+var fs  = require('fs');
 var GoogleCloudStorage = require('./../../GoogleCloudStorage');
 
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -44,27 +45,48 @@ exports.pushStories = function (req, res) {
     } else {
 
       const blob = req.body.blob;
+      const buf = new Buffer(blob, 'base64'); // decode
+      const directoryName = 'uploads';
+      const fileName = Date.now()+'_story.wav';
 
-      GoogleCloudStorage.uploadFileToGoogleCloud(blob).then(function (data) {
-        user.stories.push({
-          'path': data.fileName,
-          'storyName': req.body.storyName,
-          'genre': req.body.genre,
-        });
-        user.save(function (err, user) {
-          if (err) {
-            res.status(500).send(err);
-          } else {
-            res.json({
-              'success': true,
-              'message': 'You story is uploaded successfully!',
+      if (!fs.existsSync(directoryName)){
+        fs.mkdirSync(directoryName);
+      }
+
+      fs.writeFile(directoryName+'/'+fileName, buf, function (err) {
+        if (err) {
+          res.status(500).send(err);
+        } else {
+          GoogleCloudStorage.uploadFileToGoogleCloud(directoryName+'/'+fileName).then(function () {
+            GoogleCloudStorage.makePublic(fileName).then(function (data) {
+              user.stories.push({
+                'path': fileName,
+                'storyName': req.body.storyName,
+                'genre': req.body.genre
+              });
+              user.save(function (err, user) {
+                if (err) {
+                  res.status(500).send(err);
+                } else {
+                  res.json({
+                    'success': true,
+                    'message': 'You story is uploaded successfully!'
+                  });
+                }
+              });
+            }).catch(function (err) {
+              res.status(500).send(err);
             });
-          }
-        });
 
-      }).catch(function (err) {
-        res.status(500).send(err);
+            fs.unlink(directoryName+'/'+fileName);
+          }).catch(function (err) {
+            res.status(500).send(err);
+          });
+
+
+        }
       });
+
 
     }
   });
@@ -196,8 +218,8 @@ exports.deleteStory = function (req, res) {
     {
       $match: {
         '_id': new ObjectId(userId),
-        'stories._id': new ObjectId(storyId)
-      }
+        'stories._id': new ObjectId(storyId),
+      },
     },
     {$project: {fileName: '$stories.path'}}, function (err, story) {
       if (err) {
@@ -212,7 +234,7 @@ exports.deleteStory = function (req, res) {
             } else {
               res.json({
                 'success': true,
-                'message': 'Successfully deleted the story ' + storyId
+                'message': 'Successfully deleted the story ' + storyId,
               });
               //remove the file from GCS
               GoogleCloudStorage.deleteFileFromGoogleCloud(story[0].fileName).
@@ -235,8 +257,10 @@ exports.deleteStory = function (req, res) {
 exports.getStoryAudio = function (req, res) {
   const fileName = req.params.fileName;
 
-  GoogleCloudStorage.readFileFromGoogleCloud(fileName).then(function (results) {
-    const url = results[0];
+
+  GoogleCloudStorage.readFileFromGoogleCloud(fileName).then(function (data) {
+    const url = data[0];
+
 
     const externalReq = https.request({
       hostname: 'storage.googleapis.com',
@@ -246,6 +270,7 @@ exports.getStoryAudio = function (req, res) {
       externalRes.pipe(res);
     });
     externalReq.end();
+
 
   });
 
